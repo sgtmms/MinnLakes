@@ -1,5 +1,7 @@
 package net.mims.minnlakes.domain;
 
+import java.util.HashSet;
+
 import javax.annotation.Generated;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -48,8 +50,7 @@ public class Waterbody {
      *
      */
     @NotNull
-    @NumberFormat
-    private Integer stateCode;
+    private String stateCode;
 
     /**
      * TODO Auto-generated attribute documentation
@@ -94,13 +95,26 @@ public class Waterbody {
      *
      */
     @NotNull
-    private String stateName;
+	private String stateName;
+	
+	private HashSet<FishSpecies> fishSpecies = new HashSet<FishSpecies>();
 
 	/**
 	 * 
 	 */
 	public Waterbody() {
 		
+	}
+
+	public Waterbody (String stateCode, String stateName, String countyName, String lakeName, Double acres, Double latitude, Double longitude){
+		this.stateCode = stateCode;
+		this.stateName = stateName;
+		this.countyName = countyName;
+		this.lakeName = lakeName;
+		this.acres = acres;
+		this.latitude = latitude;
+		this.longitude = longitude;
+
 	}
 
 	/**
@@ -134,14 +148,14 @@ public class Waterbody {
 	/**
 	 * @return the stateCode
 	 */
-	public Integer getStateCode() {
+	public String getStateCode() {
 		return stateCode;
 	}
 
 	/**
 	 * @param stateCode the stateCode to set
 	 */
-	public void setStateCode(Integer stateCode) {
+	public void setStateCode(String stateCode) {
 		this.stateCode = stateCode;
 	}
 
@@ -227,7 +241,25 @@ public class Waterbody {
 	 */
 	public void setStateName(String stateName) {
 		this.stateName = stateName;
+
 	}
+
+
+	public void setFishSpeciesList(HashSet<FishSpecies> fishSpecies){
+		this.fishSpecies = fishSpecies;
+	} 
+
+	public boolean addFishSpeciesList(HashSet<FishSpecies> fishList){
+		return this.fishSpecies.addAll(fishList);
+	} 
+
+	public boolean addFishSpecies(FishSpecies fish){
+		return this.fishSpecies.add(fish);
+	} 
+
+	public boolean removeFishSpecies(FishSpecies fish){
+		return this.fishSpecies.remove(fish);
+	} 
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -315,6 +347,7 @@ public class Waterbody {
 	public String toString() {
 		return "Waterbody [id=" + id + ", version=" + version + ", stateCode=" + stateCode + ", lakeName=" + lakeName
 				+ ", acres=" + acres + ", latitude=" + latitude + ", longitude=" + longitude + ", countyName="
-				+ countyName + ", stateName=" + stateName + "]";
+				+ countyName + ", stateName=" + stateName + "\n" +
+				fishSpecies.toString() + "]";
 	}
 }

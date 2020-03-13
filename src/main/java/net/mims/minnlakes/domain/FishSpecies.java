@@ -31,6 +31,10 @@ public class FishSpecies {
 	public FishSpecies() {
 		
 	}
+
+	public FishSpecies(String fishTypeName) {
+		this.fishTypeName = fishTypeName;
+	}
 	
 	
 

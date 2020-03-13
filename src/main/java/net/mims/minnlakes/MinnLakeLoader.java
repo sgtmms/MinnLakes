@@ -7,11 +7,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
 
 public class MinnLakeLoader {
@@ -22,10 +23,10 @@ public class MinnLakeLoader {
 	final String URL_OF_MINN_DNR_SERVICE =  "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
 	final int NUMBER_OF_MINN_COUNTIES = 87;
 	final String STATE_ABBREVIATION = "MN";
-	final String STATE_NAME = "MINNEASOTA";
+	final String STATE_NAME = "MINNESOTA";
 	
 	
-	private ArrayList<Waterbody> waterbodies;
+	private ArrayList<Waterbody> waterbodies = new ArrayList<Waterbody>();
 	
 	public MinnLakeLoader(){
 		
@@ -82,7 +83,7 @@ public class MinnLakeLoader {
 
 						JsonNode acresNode = lake.findPath("area");
 
-						String acres = acresNode.asText();
+						Double acres = acresNode.asDouble();
 
 						System.out.println("Acres : " + acres);
 
@@ -102,14 +103,34 @@ public class MinnLakeLoader {
 
 						}
 
+						Double latitude = coords[0];
+						Double longitude = coords[1];
+
 						System.out.println("latlong: " + coords);
 
-						JsonNode speciesNode = lake.findPath("fishSpecies");
+
+						JsonNode speciesNode = lake.findPath("fishSpecies");				
+
+
+						HashSet<FishSpecies> fishes = new HashSet<FishSpecies>();
 
 						for (JsonNode name : speciesNode) {
 							String fish = name.asText();
 
+							FishSpecies fishSpecies = new FishSpecies(fish);
+							fishes.add(fishSpecies);
 							System.out.println("type : " + fish);
+
+						}
+
+						if (fishes.size()>0){
+						Waterbody waterbody = new Waterbody ("MN", "Minnesota", countyName, lakeName, acres, latitude, longitude);
+
+						waterbody.addFishSpeciesList(fishes);
+
+						waterbodies.add(waterbody);
+
+						
 
 						}
 
@@ -129,8 +150,12 @@ public class MinnLakeLoader {
 
 			}
 
-		};
+		}
+
 			
+			System.out.println(waterbodies);
+			System.out.println("Minnesota lakes with fish: " + waterbodies.size());
+			return waterbodies;
 			
 		}
 		
@@ -141,4 +166,3 @@ public class MinnLakeLoader {
 		
 				
 
-}
