@@ -244,6 +244,9 @@ public class Waterbody {
 
 	}
 
+	public HashSet<FishSpecies> getFishSpeciesList(){
+		return this.fishSpecies;
+	} 
 
 	public void setFishSpeciesList(HashSet<FishSpecies> fishSpecies){
 		this.fishSpecies = fishSpecies;

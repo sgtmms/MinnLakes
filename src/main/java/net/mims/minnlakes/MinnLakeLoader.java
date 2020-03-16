@@ -35,6 +35,7 @@ public class MinnLakeLoader {
 	public void retrieveDataAndSaveToDatabase() {
 		
 		this.waterbodies = getLakeDataFromRestService();
+		WriteMinnDataToExcel writeMinnData = new WriteMinnDataToExcel(this.waterbodies);
 		
 	}
 	
@@ -61,8 +62,6 @@ public class MinnLakeLoader {
 				while ((output = br.readLine()) != null) {
 					System.out.println(output);
 
-					System.out.println(output);
-
 					JsonNode rootArray = mapper.readTree(output);
 
 					JsonNode lakeNode = rootArray.path("results");
@@ -73,33 +72,26 @@ public class MinnLakeLoader {
 
 						String lakeName = nameNode.asText();
 
-						System.out.println("LakeName : " + lakeName);
-
 						JsonNode countyNode = lake.findPath("county");
 
 						String countyName = countyNode.asText();
 
-						System.out.println("CountyName : " + countyName);
 
 						JsonNode acresNode = lake.findPath("area");
 
 						Double acres = acresNode.asDouble();
 
-						System.out.println("Acres : " + acres);
-
 						JsonNode pointNode = lake.findPath("point");
-						System.out.println("point : " + pointNode.asText());
 
 						JsonNode geoCenterNode = pointNode.findPath("epsg:4326");
-						System.out.println("epsg:4326 is array " + geoCenterNode.toString());
 
 						int counter = 0;
 						Double[] coords = new Double[2];
+						
 						for (JsonNode coord : geoCenterNode) {
 							coords[counter] = coord.asDouble();
 
 							counter++;
-							System.out.println("coord : " + coord.asDouble());
 
 						}
 
@@ -119,7 +111,7 @@ public class MinnLakeLoader {
 
 							FishSpecies fishSpecies = new FishSpecies(fish);
 							fishes.add(fishSpecies);
-							System.out.println("type : " + fish);
+							System.out.println("species : " + fish);
 
 						}
 
