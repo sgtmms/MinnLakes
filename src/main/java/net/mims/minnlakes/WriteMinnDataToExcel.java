@@ -69,7 +69,7 @@ public class WriteMinnDataToExcel
  //{"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE", "LONGITUDE", "FISH_SPECIES"}
    Map <String, Object[]> loadDataToMap(Map<String, Object[]> data, ArrayList<Waterbody> waterbodies) {
      
-     Integer row = 2;
+     int row = 2;
      
      String fishList = "";
      
@@ -91,11 +91,13 @@ public class WriteMinnDataToExcel
          
          sb.deleteCharAt(fishList.length()-1);
          
+         Integer rowNumber = new Integer(row);
          
-         
-         data.put("1", new Object[] {waterbody.getStateCode(), waterbody.getStateName(),
+         data.put(rowNumber.toString(), new Object[] {waterbody.getStateCode(), waterbody.getStateName(),
                       waterbody.getCountyName(), waterbody.getLakeName(), waterbody.getAcres().toString(),
                       waterbody.getLatitude().toString(), waterbody.getLongitude().toString(), sb.toString()});
+                      
+         row++;
          
      
      }
