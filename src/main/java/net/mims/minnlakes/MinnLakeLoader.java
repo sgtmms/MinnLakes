@@ -79,24 +79,24 @@ public class MinnLakeLoader {
 
 						JsonNode acresNode = lake.findPath("area");
 
-						Double acres = acresNode.asDouble();
+						Float acres = acresNode.floatValue();
 
 						JsonNode pointNode = lake.findPath("point");
 
 						JsonNode geoCenterNode = pointNode.findPath("epsg:4326");
 
 						int counter = 0;
-						Double[] coords = new Double[2];
+						Float[] coords = new Float[2];
 						
 						for (JsonNode coord : geoCenterNode) {
-							coords[counter] = coord.asDouble();
+							coords[counter] = coord.floatValue();
 
 							counter++;
 
 						}
 
-						Double latitude = coords[0];
-						Double longitude = coords[1];
+						Float latitude = coords[0];
+						Float longitude = coords[1];
 
 						System.out.println("latlong: " + coords);
 

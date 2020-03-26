@@ -68,6 +68,8 @@ public class WriteMinnDataToExcel
  }
  //{"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE", "LONGITUDE", "FISH_SPECIES"}
    Map <String, Object[]> loadDataToMap(Map<String, Object[]> data, ArrayList<Waterbody> waterbodies) {
+
+    System.out.println("Entered loadDataToMap()");
      
      int row = 2;
      
@@ -98,9 +100,13 @@ public class WriteMinnDataToExcel
                       waterbody.getLatitude().toString(), waterbody.getLongitude().toString(), sb.toString()});
                       
          row++;
+
+         System.out.println(row);
          
      
      }
+
+     waterbodies = null;
      
      
      return data;

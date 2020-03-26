@@ -65,7 +65,7 @@ public class Waterbody {
      */
     @NotNull
     @NumberFormat
-    private Double acres;
+    private Float acres;
 
     /**
      * TODO Auto-generated attribute documentation
@@ -73,7 +73,7 @@ public class Waterbody {
      */
     @NotNull
     @NumberFormat
-    private Double latitude;
+    private Float latitude;
 
     /**
      * TODO Auto-generated attribute documentation
@@ -81,7 +81,7 @@ public class Waterbody {
      */
     @NotNull
     @NumberFormat
-    private Double longitude;
+    private Float longitude;
 
     /**
      * TODO Auto-generated attribute documentation
@@ -106,7 +106,7 @@ public class Waterbody {
 		
 	}
 
-	public Waterbody (String stateCode, String stateName, String countyName, String lakeName, Double acres, Double latitude, Double longitude){
+	public Waterbody (String stateCode, String stateName, String countyName, String lakeName, Float acres, Float latitude, Float longitude){
 		this.stateCode = stateCode;
 		this.stateName = stateName;
 		this.countyName = countyName;
@@ -176,42 +176,42 @@ public class Waterbody {
 	/**
 	 * @return the acres
 	 */
-	public Double getAcres() {
+	public Float getAcres() {
 		return acres;
 	}
 
 	/**
 	 * @param acres the acres to set
 	 */
-	public void setAcres(Double acres) {
+	public void setAcres(Float acres) {
 		this.acres = acres;
 	}
 
 	/**
 	 * @return the latitude
 	 */
-	public Double getLatitude() {
+	public Float getLatitude() {
 		return latitude;
 	}
 
 	/**
 	 * @param latitude the latitude to set
 	 */
-	public void setLatitude(Double latitude) {
+	public void setLatitude(Float latitude) {
 		this.latitude = latitude;
 	}
 
 	/**
 	 * @return the longitude
 	 */
-	public Double getLongitude() {
+	public Float getLongitude() {
 		return longitude;
 	}
 
 	/**
 	 * @param longitude the longitude to set
 	 */
-	public void setLongitude(Double longitude) {
+	public void setLongitude(Float longitude) {
 		this.longitude = longitude;
 	}
 
