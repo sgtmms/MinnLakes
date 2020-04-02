@@ -21,7 +21,7 @@ public class MinnLakeLoader {
 				// "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?name=Clear&county=58";
 			
 	final String URL_OF_MINN_DNR_SERVICE =  "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
-	final int NUMBER_OF_MINN_COUNTIES = 87;
+	final int NUMBER_OF_MINN_COUNTIES = 87; //87
 	final String STATE_ABBREVIATION = "MN";
 	final String STATE_NAME = "MINNESOTA";
 	
@@ -79,24 +79,24 @@ public class MinnLakeLoader {
 
 						JsonNode acresNode = lake.findPath("area");
 
-						Float acres = acresNode.floatValue();
+						Double acres = acresNode.asDouble();
 
 						JsonNode pointNode = lake.findPath("point");
 
 						JsonNode geoCenterNode = pointNode.findPath("epsg:4326");
 
 						int counter = 0;
-						Float[] coords = new Float[2];
+						Double[] coords = new Double[2];
 						
 						for (JsonNode coord : geoCenterNode) {
-							coords[counter] = coord.floatValue();
+							coords[counter] = coord.asDouble();
 
 							counter++;
 
 						}
 
-						Float latitude = coords[0];
-						Float longitude = coords[1];
+						Double latitude = coords[0];
+						Double longitude = coords[1];
 
 						System.out.println("latlong: " + coords);
 

@@ -9,112 +9,158 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.*;
 import java.lang.StringBuilder;
+import java.net.URL;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ooxml.POIXMLDocument;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+public class WriteMinnDataToExcel {
+	public WriteMinnDataToExcel(ArrayList<Waterbody> waterbodies) {
+		
+		ClassLoader classloader =
+				   org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
+				URL res = classloader.getResource(
+				             "org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
+				String path = res.getPath();
+				System.out.println("POI Core came from " + path);
+
+				//classloader = org.apache.poi.ooxml.POIXMLDocument.class.getClassLoader();
+				//res = classloader.getResource("org/apache/poi/POIXMLDocument.class");
+				//path = res.getPath();
+				//System.out.println("POI OOXML came from " + path);
+
+				classloader = org.apache.poi.hslf.usermodel.HSLFSlideShow.class.getClassLoader();
+				res = classloader.getResource("org/apache/poi/hslf/usermodel/HSLFSlideShow.class");
+				path = res.getPath();
+				System.out.println("POI Scratchpad came from " + path);
+
+		@SuppressWarnings("resource")
+		Workbook workbook = new HSSFWorkbook();
 
 
-public class WriteMinnDataToExcel 
-{
- public WriteMinnDataToExcel( ArrayList<Waterbody> waterbodies) 
- {
- 
-  XSSFWorkbook workbook = new XSSFWorkbook(); 
-  
-  XSSFSheet sheet = workbook.createSheet("Minnesota Data");
-   
-  //This data needs to be written (Object[])
-  Map<String, Object[]> data = new TreeMap<String, Object[]>();
-  data.put("1", new Object[] {"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE", "LONGITUDE", "FISH_SPECIES"});
-  data = loadDataToMap(data, waterbodies);
-   
-  //Iterate over data and write to sheet
-  Set<String> keyset = data.keySet();
-  int rownum = 0;
-  for (String key : keyset)
-  {
-      Row row = sheet.createRow(rownum++);
-      Object [] objArr = data.get(key);
-      int cellnum = 0;
-      for (Object obj : objArr)
-      {
-         Cell cell = row.createCell(cellnum++);
-         if(obj instanceof String)
-              cell.setCellValue((String)obj);
-          else if(obj instanceof Integer)
-              cell.setCellValue((Integer)obj);
-      }
-  }
-  try 
-  {
-   //Write the workbook in file system
-      FileOutputStream out = new FileOutputStream(new File("MinnLakeData.xlsx"));
-      workbook.write(out);
-      out.close();
-      System.out.println("MinnLakeData.xlsx written successfully on disk.");
-  } 
-  catch (Exception e) 
-  {
-      e.printStackTrace();
-  }
- }
- //{"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE", "LONGITUDE", "FISH_SPECIES"}
-   Map <String, Object[]> loadDataToMap(Map<String, Object[]> data, ArrayList<Waterbody> waterbodies) {
+		Sheet sheet = workbook.createSheet();
+		// Create a row and put some cells in it. Rows are 0 based.
+		Row row  = sheet.createRow(0);
+		
+		row.createCell(1).setCellValue("STATE_CODE");
+		row.createCell(2).setCellValue("STATE_NAME");
+		row.createCell(3).setCellValue("COUNTY_NAME");
+		row.createCell(4).setCellValue("LAKE_NAME");
+		row.createCell(5).setCellValue("ACRES");
+		row.createCell(6).setCellValue("LATITUDE");
+		row.createCell(7).setCellValue("LONGITUDE");
+		row.createCell(8).setCellValue("FISH_SPECIES");
+		
+		
 
-    System.out.println("Entered loadDataToMap()");
-     
-     int row = 2;
-     
-     String fishList = "";
-     
-     for(Waterbody waterbody : waterbodies){
-     
-         HashSet<FishSpecies> fishes = waterbody.getFishSpeciesList();
-         
-         
-         
-         for(FishSpecies fish : fishes) {
-          
-             fishList += fish.getFishTypeName() + ", "; 
-          
-         } 
-         
-         fishList = fishList.trim();
-         
-         StringBuilder sb = new StringBuilder(fishList);
-         
-         sb.deleteCharAt(fishList.length()-1);
-         
-         Integer rowNumber = new Integer(row);
-         
-         data.put(rowNumber.toString(), new Object[] {waterbody.getStateCode(), waterbody.getStateName(),
-                      waterbody.getCountyName(), waterbody.getLakeName(), waterbody.getAcres().toString(),
-                      waterbody.getLatitude().toString(), waterbody.getLongitude().toString(), sb.toString()});
-                      
-         row++;
 
-         System.out.println(row);
-         
-     
-     }
+		// Iterate over data and write to sheet
+		
+		int rownum = 1;
+		HashSet<FishSpecies> fishes;
+		
+		String fishList;
+		
+		for (Waterbody waterbody : waterbodies) {
+			row = sheet.createRow(rownum);
+			
+			row.createCell(1).setCellValue(waterbody.getStateCode());
+			row.createCell(2).setCellValue(waterbody.getStateName());
+			row.createCell(3).setCellValue(waterbody.getCountyName());
+			row.createCell(4).setCellValue(waterbody.getLakeName());
+			row.createCell(5).setCellValue(waterbody.getAcres());
+			row.createCell(6).setCellValue(waterbody.getLatitude());
+			row.createCell(7).setCellValue(waterbody.getLongitude());
+			
+			fishes = waterbody.getFishSpeciesList();
+			fishList = "";
 
-     waterbodies = null;
-     
-     
-     return data;
-     
-     
-   
-   
-   } 
-   
- 
+			for (FishSpecies fish : fishes) {
+
+				fishList += fish.getFishTypeName() + ", ";
+
+			}
+
+			fishList = fishList.trim();
+
+			StringBuilder sb = new StringBuilder(fishList);
+
+			sb.deleteCharAt(fishList.length() - 1);
+						
+			row.createCell(8).setCellValue(sb.toString());
+			
+			
+			rownum++;
+			
+			
+			
+			
+			
+		}
+		try {
+			// Write the workbook in file system
+			FileOutputStream out = new FileOutputStream(new File("MinnLakeData2.xlsx"));
+			workbook.write(out);
+			out.close();
+			System.out.println("MinnLakeData.xlsx written successfully on disk.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// {"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE",
+	// "LONGITUDE", "FISH_SPECIES"}
+	Map<String, Object[]> loadDataToMap(Map<String, Object[]> data, ArrayList<Waterbody> waterbodies) {
+
+		System.out.println("Entered loadDataToMap()");
+
+		int row = 2;
+
+		String fishList = "";
+
+		for (Waterbody waterbody : waterbodies) {
+
+			HashSet<FishSpecies> fishes = waterbody.getFishSpeciesList();
+
+			for (FishSpecies fish : fishes) {
+
+				fishList += fish.getFishTypeName() + ", ";
+
+			}
+
+			fishList = fishList.trim();
+
+			StringBuilder sb = new StringBuilder(fishList);
+
+			sb.deleteCharAt(fishList.length() - 1);
+
+			Integer rowNumber = new Integer(row);
+
+			data.put(rowNumber.toString(),
+					new Object[] { waterbody.getStateCode(), waterbody.getStateName(), waterbody.getCountyName(),
+							waterbody.getLakeName(), waterbody.getAcres().toString(),
+							waterbody.getLatitude().toString(), waterbody.getLongitude().toString(), sb.toString() });
+
+			row++;
+
+			System.out.println(row);
+
+		}
+
+		waterbodies = null;
+
+		return data;
+
+	}
+
 }
