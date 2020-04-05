@@ -1,15 +1,11 @@
 package net.mims.minnlakes.domain;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Generated;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import javax.validation.constraints.NotNull;
 
 
@@ -23,8 +19,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * TODO Auto-generated class documentation
  *
  */
-@Entity
-@Table(name = "Waterbody")
+@Entity(name = "Waterbody")
+@Table(name= "waterbody")
+//@Table(uniqueConstraints=@UniqueConstraint(columnNames={"lakeName","acres", "latitude", "longitude"}))
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Waterbody {
 
@@ -34,8 +31,8 @@ public class Waterbody {
      */
 	
     @Id
-    @Access(value=AccessType.FIELD)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "waterbody_id")
     private Long id;
 
     /**
@@ -96,8 +93,14 @@ public class Waterbody {
      */
     @NotNull
 	private String stateName;
-	
-	private HashSet<FishSpecies> fishSpecies = new HashSet<FishSpecies>();
+      
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    	@JoinTable(name = "waterbody_fishspecies",
+    	    joinColumns = @JoinColumn(name = "waterbody_id", referencedColumnName="waterbody_id"),
+    	    inverseJoinColumns = @JoinColumn(name = "fishspecies_id", referencedColumnName="fishspecies_id")
+    	)
+	private Set<FishSpecies> fishSpecies = new HashSet<>();
 
 	/**
 	 * 
@@ -127,7 +130,7 @@ public class Waterbody {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
+	public void setWaterbodyId(Long id) {
 		this.id = id;
 	}
 
@@ -244,11 +247,11 @@ public class Waterbody {
 
 	}
 
-	public HashSet<FishSpecies> getFishSpeciesList(){
+	public Set<FishSpecies> getFishSpeciesList(){
 		return this.fishSpecies;
 	} 
 
-	public void setFishSpeciesList(HashSet<FishSpecies> fishSpecies){
+	public void setFishSpeciesList(Set<FishSpecies> fishSpecies){
 		this.fishSpecies = fishSpecies;
 	} 
 

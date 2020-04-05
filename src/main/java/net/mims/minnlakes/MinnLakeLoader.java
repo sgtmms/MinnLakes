@@ -12,6 +12,7 @@ import java.util.HashSet;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.mims.minnlakes.data.WriteMinnDataToDatabase;
 import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
 
@@ -21,7 +22,7 @@ public class MinnLakeLoader {
 				// "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?name=Clear&county=58";
 			
 	final String URL_OF_MINN_DNR_SERVICE =  "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
-	final int NUMBER_OF_MINN_COUNTIES = 87; //87
+	final int NUMBER_OF_MINN_COUNTIES = 8; //87
 	final String STATE_ABBREVIATION = "MN";
 	final String STATE_NAME = "MINNESOTA";
 	
@@ -36,6 +37,8 @@ public class MinnLakeLoader {
 		
 		this.waterbodies = getLakeDataFromRestService();
 		WriteMinnDataToExcel writeMinnData = new WriteMinnDataToExcel(this.waterbodies);
+		WriteMinnDataToDatabase writeMinnDataToDatabase = new WriteMinnDataToDatabase(this.waterbodies);
+		
 		
 	}
 	

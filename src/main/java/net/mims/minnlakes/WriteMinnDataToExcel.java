@@ -82,7 +82,7 @@ public class WriteMinnDataToExcel {
 			row.createCell(6).setCellValue(waterbody.getLatitude());
 			row.createCell(7).setCellValue(waterbody.getLongitude());
 			
-			fishes = waterbody.getFishSpeciesList();
+			fishes = (HashSet<FishSpecies>) waterbody.getFishSpeciesList();
 			fishList = "";
 
 			for (FishSpecies fish : fishes) {
@@ -118,49 +118,6 @@ public class WriteMinnDataToExcel {
 		}
 	}
 
-	// {"STATE_CODE", "STATE_NAME", "COUNTY_NAME", "LAKE_NAME", "ACRES", "LATITUDE",
-	// "LONGITUDE", "FISH_SPECIES"}
-	Map<String, Object[]> loadDataToMap(Map<String, Object[]> data, ArrayList<Waterbody> waterbodies) {
-
-		System.out.println("Entered loadDataToMap()");
-
-		int row = 2;
-
-		String fishList = "";
-
-		for (Waterbody waterbody : waterbodies) {
-
-			HashSet<FishSpecies> fishes = waterbody.getFishSpeciesList();
-
-			for (FishSpecies fish : fishes) {
-
-				fishList += fish.getFishTypeName() + ", ";
-
-			}
-
-			fishList = fishList.trim();
-
-			StringBuilder sb = new StringBuilder(fishList);
-
-			sb.deleteCharAt(fishList.length() - 1);
-
-			Integer rowNumber = new Integer(row);
-
-			data.put(rowNumber.toString(),
-					new Object[] { waterbody.getStateCode(), waterbody.getStateName(), waterbody.getCountyName(),
-							waterbody.getLakeName(), waterbody.getAcres().toString(),
-							waterbody.getLatitude().toString(), waterbody.getLongitude().toString(), sb.toString() });
-
-			row++;
-
-			System.out.println(row);
-
-		}
-
-		waterbodies = null;
-
-		return data;
-
-	}
+	
 
 }

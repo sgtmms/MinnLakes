@@ -1,15 +1,11 @@
 package net.mims.minnlakes.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.Generated;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,46 +16,55 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * TODO Auto-generated class documentation
  *
  */
-@Entity
-@Table(name = "FishType")
+@Entity(name = "FishSpecies")
+@Table(name= "fishspecies"
+, uniqueConstraints=@UniqueConstraint(columnNames={"fishtypename"})
+)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FishSpecies {
 
-    /**
-	 * 
-	 */
-	public FishSpecies() {
-		
-	}
-
-	public FishSpecies(String fishTypeName) {
-		this.fishTypeName = fishTypeName;
-	}
-	
 	
 
 	/**
-     * TODO Auto-generated attribute documentation
-     *
-     */
-    @Id
-    @Access(value=AccessType.FIELD)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	 * TODO Auto-generated attribute documentation
+	 *
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "fishspecies_id")
+	private Long id;
 
-    /**
-     * TODO Auto-generated attribute documentation
-     *
-     */
-    @Version
-    private Integer version;
+	/**
+	 * TODO Auto-generated attribute documentation
+	 *
+	 */
+	@Version
+	private Integer version;
 
-    /**
-     * TODO Auto-generated attribute documentation
-     *
-     */
-    @NotNull
-    private String fishTypeName;
+	/**
+	 * TODO Auto-generated attribute documentation
+	 *
+	 */
+	@NotNull
+	//@Column(unique = true)
+	private String fishTypeName;
+
+	@ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER, mappedBy = "fishSpecies")
+	private Set<Waterbody> waterbodies = new HashSet<>();
+	
+	/**
+	 * 
+	 */
+	public FishSpecies() {
+
+	}
+
+	/**
+	 * 
+	 */
+	public FishSpecies(String name) {
+		this.fishTypeName=name;
+	}
 
 	/**
 	 * @return the id
@@ -69,9 +74,10 @@ public class FishSpecies {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId(Long id) {
+	public void setFishspeciesId(Long id) {
 		this.id = id;
 	}
 
@@ -83,7 +89,8 @@ public class FishSpecies {
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
 	public void setVersion(Integer version) {
 		this.version = version;
@@ -97,13 +104,24 @@ public class FishSpecies {
 	}
 
 	/**
-	 * @param fishTypeName the fishTypeName to set
+	 * @param fishTypeName
+	 *            the fishTypeName to set
 	 */
 	public void setFishTypeName(String fishTypeName) {
 		this.fishTypeName = fishTypeName;
 	}
 
-	/* (non-Javadoc)
+	public Set<Waterbody> getWaterbodies() {
+		return this.waterbodies;
+	}
+
+	public void setWaterbodies(Set<Waterbody> waterbodies) {
+		this.waterbodies = waterbodies;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -111,12 +129,13 @@ public class FishSpecies {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((fishTypeName == null) ? 0 : fishTypeName.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -133,26 +152,18 @@ public class FishSpecies {
 				return false;
 		} else if (!fishTypeName.equals(other.fishTypeName))
 			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!version.equals(other.version))
-			return false;
+		
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "Fishtype [id=" + id + ", fishTypeName=" + fishTypeName + "]";
 	}
-	
-	
+
 }
