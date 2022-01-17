@@ -3,15 +3,15 @@ package net.mims.minnlakes.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * = Fishtype
+ * 
  *
  * TODO Auto-generated class documentation
  *
@@ -45,9 +45,17 @@ public class FishSpecies {
 	 * TODO Auto-generated attribute documentation
 	 *
 	 */
-	@NotNull
-	//@Column(unique = true)
+	@Column(length = 48, unique = true)
+    @Size(min = 2, max = 48)
+    @NotNull
 	private String fishTypeName;
+	
+	
+	@Column(length = 48)
+    @Size(min = 2, max = 48)
+    @NotNull
+	private String imagePath;
+	
 
 	@ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER, mappedBy = "fishSpecies")
 	private Set<Waterbody> waterbodies = new HashSet<>();
@@ -56,13 +64,22 @@ public class FishSpecies {
 	 * 
 	 */
 	public FishSpecies() {
-
+		this.imagePath = "/images/default.jpg";
 	}
 
 	/**
 	 * 
 	 */
 	public FishSpecies(String name) {
+		this.imagePath = "/images/default.jpg";
+		this.fishTypeName=name;
+	}
+	
+	/**
+	 * 
+	 */
+	public FishSpecies(String name, String imagePath) {
+		this.imagePath = "/images/default.jpg";
 		this.fishTypeName=name;
 	}
 
@@ -109,6 +126,14 @@ public class FishSpecies {
 	 */
 	public void setFishTypeName(String fishTypeName) {
 		this.fishTypeName = fishTypeName;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	public Set<Waterbody> getWaterbodies() {

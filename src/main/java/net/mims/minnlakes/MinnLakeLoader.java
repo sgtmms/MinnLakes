@@ -17,34 +17,33 @@ import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
 
 public class MinnLakeLoader {
-	
+
 	// String baseUrl =
-				// "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?name=Clear&county=58";
-			
-	final String URL_OF_MINN_DNR_SERVICE =  "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
-	final int NUMBER_OF_MINN_COUNTIES = 8; //87
+	// "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?name=Clear&county=58";
+
+	final String URL_OF_MINN_DNR_SERVICE = "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
+	final int NUMBER_OF_MINN_COUNTIES = 87; // 87
 	final String STATE_ABBREVIATION = "MN";
 	final String STATE_NAME = "MINNESOTA";
-	
-	
+	final int MAX_LAKENAME = 72;
+
 	private ArrayList<Waterbody> waterbodies = new ArrayList<Waterbody>();
-	
-	public MinnLakeLoader(){
-		
+
+	public MinnLakeLoader() {
+
 	}
-	
+
 	public void retrieveDataAndSaveToDatabase() {
-		
+
 		this.waterbodies = getLakeDataFromRestService();
 		WriteMinnDataToExcel writeMinnData = new WriteMinnDataToExcel(this.waterbodies);
 		WriteMinnDataToDatabase writeMinnDataToDatabase = new WriteMinnDataToDatabase(this.waterbodies);
-		
-		
+
 	}
-	
+
 	public ArrayList<Waterbody> getLakeDataFromRestService() {
 		for (int countyNumber = 1; countyNumber <= NUMBER_OF_MINN_COUNTIES; countyNumber++) {
-			
+
 			String output = null;
 			final ObjectMapper mapper = new ObjectMapper();
 
@@ -74,11 +73,14 @@ public class MinnLakeLoader {
 						JsonNode nameNode = lake.findPath("name");
 
 						String lakeName = nameNode.asText();
+						
+						if(lakeName.length() > MAX_LAKENAME ){
+						    lakeName = lakeName.substring(0, MAX_LAKENAME);
+						}
 
 						JsonNode countyNode = lake.findPath("county");
 
 						String countyName = countyNode.asText();
-
 
 						JsonNode acresNode = lake.findPath("area");
 
@@ -90,7 +92,7 @@ public class MinnLakeLoader {
 
 						int counter = 0;
 						Double[] coords = new Double[2];
-						
+
 						for (JsonNode coord : geoCenterNode) {
 							coords[counter] = coord.asDouble();
 
@@ -98,14 +100,12 @@ public class MinnLakeLoader {
 
 						}
 
-						Double latitude = coords[0];
-						Double longitude = coords[1];
+						Double latitude = coords[1];
+						Double longitude = coords[0];
 
-						System.out.println("latlong: " + coords);
+						
 
-
-						JsonNode speciesNode = lake.findPath("fishSpecies");				
-
+						JsonNode speciesNode = lake.findPath("fishSpecies");
 
 						HashSet<FishSpecies> fishes = new HashSet<FishSpecies>();
 
@@ -118,14 +118,17 @@ public class MinnLakeLoader {
 
 						}
 
-						if (fishes.size()>0){
-						Waterbody waterbody = new Waterbody ("MN", "Minnesota", countyName, lakeName, acres, latitude, longitude);
+						if (fishes.size() > 0 && Double.compare(longitude, -89.47d) < 0 && Double.compare(longitude, -97.25d) > 0 
+								&& Double.compare(latitude, 43.49d) > 0 && Double.compare(latitude, 49.39d) < 0){
+							
+							System.out.println("long: " + longitude.toString() + " lat: " + latitude.toString());
+							
+							Waterbody waterbody = new Waterbody("MN", "Minnesota", countyName, lakeName, acres,
+									latitude, longitude);
 
-						waterbody.addFishSpeciesList(fishes);
+							waterbody.addFishSpeciesList(fishes);
 
-						waterbodies.add(waterbody);
-
-						
+							waterbodies.add(waterbody);
 
 						}
 
@@ -147,17 +150,10 @@ public class MinnLakeLoader {
 
 		}
 
-			
-			System.out.println(waterbodies);
-			System.out.println("Minnesota lakes with fish: " + waterbodies.size());
-			return waterbodies;
-			
-		}
-		
-		
+		System.out.println(waterbodies);
+		System.out.println("Minnesota lakes with fish: " + waterbodies.size());
+		return waterbodies;
+
 	}
-	
 
-		
-				
-
+}

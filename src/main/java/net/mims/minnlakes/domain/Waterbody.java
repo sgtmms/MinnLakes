@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.annotation.Generated;
 import javax.persistence.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 
 import org.springframework.format.annotation.NumberFormat;
@@ -46,6 +46,8 @@ public class Waterbody {
      * TODO Auto-generated attribute documentation
      *
      */
+    @Column(length = 2)
+    @Size(min = 2, max = 2)
     @NotNull
     private String stateCode;
 
@@ -53,6 +55,8 @@ public class Waterbody {
      * TODO Auto-generated attribute documentation
      *
      */
+    @Column(length = 72)
+    @Size(min = 0, max = 72)
     @NotNull
     private String lakeName;
 
@@ -84,6 +88,8 @@ public class Waterbody {
      * TODO Auto-generated attribute documentation
      *
      */
+    @Column(length = 24)
+    @Size(min = 2, max = 24)
     @NotNull
     private String countyName;
 
@@ -91,6 +97,8 @@ public class Waterbody {
      * TODO Auto-generated attribute documentation
      *
      */
+    @Column(length = 24)
+    @Size(min = 2, max = 24)
     @NotNull
 	private String stateName;
       
@@ -357,3 +365,4 @@ public class Waterbody {
 				fishSpecies.toString() + "]";
 	}
 }
+
