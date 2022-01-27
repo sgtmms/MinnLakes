@@ -1,17 +1,13 @@
 package net.mims.minnlakes.domain;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.annotation.Generated;
-import javax.persistence.*;
-
-import javax.validation.constraints.*;
-
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.NumberFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * = Waterbody

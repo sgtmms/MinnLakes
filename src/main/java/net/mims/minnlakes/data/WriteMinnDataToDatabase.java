@@ -1,16 +1,13 @@
 package net.mims.minnlakes.data;
 
+import net.mims.minnlakes.domain.FishSpecies;
+import net.mims.minnlakes.domain.Waterbody;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.Criteria;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import net.mims.minnlakes.domain.FishSpecies;
-import net.mims.minnlakes.domain.Waterbody;
 
 public class WriteMinnDataToDatabase {
 

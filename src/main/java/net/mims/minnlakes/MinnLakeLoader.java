@@ -1,39 +1,41 @@
 package net.mims.minnlakes;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import net.mims.minnlakes.data.WriteMinnDataToDatabase;
 import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MinnLakeLoader {
 
 	// String baseUrl =
 	// "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?name=Clear&county=58";
 
-	final String URL_OF_MINN_DNR_SERVICE = "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county=";
+	final String URL_OF_MINN_DNR_SERVICE = "https://maps2.dnr.state.mn.us/cgi-bin/lakefinder_json.cgi?county={countyID}";
 	final int NUMBER_OF_MINN_COUNTIES = 87; // 87
 	final String STATE_ABBREVIATION = "MN";
 	final String STATE_NAME = "MINNESOTA";
 	final int MAX_LAKENAME = 72;
 
 	private ArrayList<Waterbody> waterbodies = new ArrayList<Waterbody>();
+	@Autowired
+	WebClient webClient;
 
-	public MinnLakeLoader() {
+	public MinnLakeLoader(WebClient webClient) {
+		this.webClient = webClient;
 
 	}
 
 	public void retrieveDataAndSaveToDatabase() {
+
+
 
 		this.waterbodies = getLakeDataFromRestService();
 		WriteMinnDataToExcel writeMinnData = new WriteMinnDataToExcel(this.waterbodies);
@@ -42,29 +44,25 @@ public class MinnLakeLoader {
 	}
 
 	public ArrayList<Waterbody> getLakeDataFromRestService() {
+
+
+
 		for (int countyNumber = 1; countyNumber <= NUMBER_OF_MINN_COUNTIES; countyNumber++) {
 
 			String output = null;
 			final ObjectMapper mapper = new ObjectMapper();
 
 			try {
+				String countyID = String.valueOf(countyNumber);
+				Mono<String> result = webClient.get().uri(URL_OF_MINN_DNR_SERVICE, countyID)
+						.retrieve()
+						.bodyToMono(String.class);
+				String input = result.block();
 
-				URL url = new URL(URL_OF_MINN_DNR_SERVICE + countyNumber);
 
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("GET");
-				conn.setRequestProperty("Accept", "application/json");
+					System.out.println(input);
 
-				if (conn.getResponseCode() != 200) {
-					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
-				}
-
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-
-				while ((output = br.readLine()) != null) {
-					System.out.println(output);
-
-					JsonNode rootArray = mapper.readTree(output);
+					JsonNode rootArray = mapper.readTree(input);
 
 					JsonNode lakeNode = rootArray.path("results");
 
@@ -134,13 +132,9 @@ public class MinnLakeLoader {
 
 					}
 
-				}
 
-				conn.disconnect();
 
-			} catch (MalformedURLException e) {
 
-				e.printStackTrace();
 
 			} catch (IOException e) {
 

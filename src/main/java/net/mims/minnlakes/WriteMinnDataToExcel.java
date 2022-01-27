@@ -2,27 +2,16 @@ package net.mims.minnlakes;
 
 import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.*;
-import java.lang.StringBuilder;
-import java.net.URL;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import org.apache.poi.ooxml.POIXMLDocument;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class WriteMinnDataToExcel {
 	public WriteMinnDataToExcel(ArrayList<Waterbody> waterbodies) {
