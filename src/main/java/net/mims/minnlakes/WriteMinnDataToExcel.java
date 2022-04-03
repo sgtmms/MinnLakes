@@ -3,74 +3,71 @@ package net.mims.minnlakes;
 import net.mims.minnlakes.domain.FishSpecies;
 import net.mims.minnlakes.domain.Waterbody;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class WriteMinnDataToExcel {
-	public WriteMinnDataToExcel(ArrayList<Waterbody> waterbodies) {
-		
-		ClassLoader classloader =
-				   org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
-				URL res = classloader.getResource(
-				             "org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
-				String path = res.getPath();
-				System.out.println("POI Core came from " + path);
+	public WriteMinnDataToExcel(List<Waterbody> waterbodies) throws NoSuchMethodException {
 
-				//classloader = org.apache.poi.ooxml.POIXMLDocument.class.getClassLoader();
-				//res = classloader.getResource("org/apache/poi/POIXMLDocument.class");
-				//path = res.getPath();
-				//System.out.println("POI OOXML came from " + path);
-
-				classloader = org.apache.poi.hslf.usermodel.HSLFSlideShow.class.getClassLoader();
-				res = classloader.getResource("org/apache/poi/hslf/usermodel/HSLFSlideShow.class");
-				path = res.getPath();
-				System.out.println("POI Scratchpad came from " + path);
 
 		@SuppressWarnings("resource")
-		Workbook workbook = new HSSFWorkbook();
+		SXSSFWorkbook workbook = null;
+		FileOutputStream fos = null;
 
+		try {
+
+			workbook = new SXSSFWorkbook(100);
 
 		Sheet sheet = workbook.createSheet();
 		// Create a row and put some cells in it. Rows are 0 based.
 		Row row  = sheet.createRow(0);
-		
-		row.createCell(1).setCellValue("STATE_CODE");
-		row.createCell(2).setCellValue("STATE_NAME");
-		row.createCell(3).setCellValue("COUNTY_NAME");
-		row.createCell(4).setCellValue("LAKE_NAME");
-		row.createCell(5).setCellValue("ACRES");
-		row.createCell(6).setCellValue("LATITUDE");
-		row.createCell(7).setCellValue("LONGITUDE");
-		row.createCell(8).setCellValue("FISH_SPECIES");
-		
-		
 
+		row.createCell(0).setCellValue("STATE_CODE");
+		row.createCell(1).setCellValue("STATE_NAME");
+		row.createCell(2).setCellValue("COUNTY_NAME");
+		row.createCell(3).setCellValue("LAKE_NAME");
+		row.createCell(4).setCellValue("ACRES");
+		row.createCell(5).setCellValue("LATITUDE");
+		row.createCell(6).setCellValue("LONGITUDE");
+		row.createCell(7).setCellValue("FISH_SPECIES");
+
+
+
+			@SuppressWarnings("unchecked")
 
 		// Iterate over data and write to sheet
-		
+
 		int rownum = 1;
 		HashSet<FishSpecies> fishes;
-		
+
 		String fishList;
-		
+
 		for (Waterbody waterbody : waterbodies) {
 			row = sheet.createRow(rownum);
-			
-			row.createCell(1).setCellValue(waterbody.getStateCode());
-			row.createCell(2).setCellValue(waterbody.getStateName());
-			row.createCell(3).setCellValue(waterbody.getCountyName());
-			row.createCell(4).setCellValue(waterbody.getLakeName());
-			row.createCell(5).setCellValue(waterbody.getAcres());
-			row.createCell(6).setCellValue(waterbody.getLatitude());
-			row.createCell(7).setCellValue(waterbody.getLongitude());
-			
+
+			row.createCell(0).setCellValue(waterbody.getStateCode());
+			row.createCell(1).setCellValue(waterbody.getStateName());
+			row.createCell(2).setCellValue(waterbody.getCountyName());
+			row.createCell(3).setCellValue(waterbody.getLakeName());
+			row.createCell(4).setCellValue(waterbody.getAcres());
+			row.createCell(5).setCellValue(waterbody.getLatitude());
+			row.createCell(6).setCellValue(waterbody.getLongitude());
+
 			fishes = (HashSet<FishSpecies>) waterbody.getFishSpeciesList();
 			fishList = "";
 
@@ -85,16 +82,17 @@ public class WriteMinnDataToExcel {
 			StringBuilder sb = new StringBuilder(fishList);
 
 			sb.deleteCharAt(fishList.length() - 1);
-						
-			row.createCell(8).setCellValue(sb.toString());
-			
-			
+
+			row.createCell(7).setCellValue(sb.toString());
+
+			if (rownum % 100 == 0) {
+				// retain 100 last rows and flush all others
+				((SXSSFSheet) sheet).flushRows(100);
+			}
+
 			rownum++;
-			
-			
-			
-			
-			
+
+
 		}
 		try {
 			// Write the workbook in file system
@@ -105,8 +103,21 @@ public class WriteMinnDataToExcel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+
+	} catch (NullPointerException npe){
+			npe.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
-	
+		public String capitalizeInitialLetter (String s){
+			if (s.length() == 0)
+				return s;
+			return s.substring(0, 1).toUpperCase() + s.substring(1);
+		}
 
-}
+	}

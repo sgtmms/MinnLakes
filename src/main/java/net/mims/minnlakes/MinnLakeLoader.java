@@ -33,7 +33,7 @@ public class MinnLakeLoader {
 
 	}
 
-	public void retrieveDataAndSaveToDatabase() {
+	public void retrieveDataAndSaveToDatabase() throws NoSuchMethodException {
 
 
 
