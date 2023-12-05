@@ -17,7 +17,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
-		<logback.version>1.2.10</logback.version>
+		<logback.version>1.2.13</logback.version>
 		<poi.version>5.2.1</poi.version>
 	</properties>
 	<dependencyManagement>
